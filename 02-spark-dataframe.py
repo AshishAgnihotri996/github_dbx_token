@@ -127,6 +127,38 @@ fire_df.write.mode("overwrite").saveAsTable("dev.spark_db.sf_fire_calls")
 
 # COMMAND ----------
 
+# MAGIC %sql
+# MAGIC
+# MAGIC select CallType,Zipcode,count(*)as count from dev.spark_db.sf_fire_calls
+# MAGIC group by CallType, Zipcode
+# MAGIC order by count desc 
+# MAGIC limit 3
+
+# COMMAND ----------
+
+fire_df = spark.read.table("dev.spark_db.sf_fire_calls")
+#read table
+
+# COMMAND ----------
+
+#apply trasform
+df_1 = fire_df.select("CallType","Zipcode")
+df_2 = df_1.where("CallType is not null")
+df_3 = df_2.groupBy("CallType","Zipcode").count()
+df_4 =df_3.orderBy("count",ascending=False)
+df_5 = df_4.limit(3)
+
+
+# COMMAND ----------
+
+df_5.show()
+
+# COMMAND ----------
+
+
+
+# COMMAND ----------
+
 # MAGIC %md
 # MAGIC &copy; 2021-2026 <a href="https://www.scholarnest.com/">ScholarNest</a>. All rights reserved.<br/>
 # MAGIC Apache, Apache Spark, Spark and the Spark logo are trademarks of the <a href="https://www.apache.org/">Apache Software Foundation.</a><br/>
