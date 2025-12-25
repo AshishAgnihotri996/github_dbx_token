@@ -1,8 +1,5 @@
 # Databricks notebook source
-# MAGIC %md
-# MAGIC <div style="text-align: center; line-height: 0; padding-top: 9px;">
-# MAGIC <img src="https://learningjournal.github.io/pub-resources/logos/scholarnest_academy.jpg" alt="ScholarNest Academy" style="width: 1400px">
-# MAGIC </div>
+
 
 # COMMAND ----------
 
@@ -151,11 +148,38 @@ df_5 = df_4.limit(3)
 
 # COMMAND ----------
 
-df_5.show()
+result_df = (
+    fire_df.select("CallType","Zipcode")
+    # .where("CallType is not null")
+    # .groupBy("CallType","Zipcode").count()
+    # .orderBy("count",ascending=False)
+    # .limit(3)
+)
+
+# COMMAND ----------
+
+result_df.show()
+
+# COMMAND ----------
+
+# MAGIC %md 
+# MAGIC #####api concept data frame#####
+# MAGIC
+
+# COMMAND ----------
+
+result_df.explain()
 
 # COMMAND ----------
 
 
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC 1 spark create optimised query plan df_3.explain()
+# MAGIC 2 dataframes are immutable ( it dont modify)
+# MAGIC 3 
 
 # COMMAND ----------
 
