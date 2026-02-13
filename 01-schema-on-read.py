@@ -36,16 +36,12 @@
 
 # COMMAND ----------
 
-
-
-# COMMAND ----------
-
 flight_time_raw_df = (
     spark.read
-        .format("json")
-        .option("mode", "FAILFAST")
-        .option("dateFormat", "M/d/yyyy")
-        .load("/Volumes/dev/spark_db/datasets/spark_programming/data/flight-time.json")
+    .format("json")
+    .option("mode","FAILFAST")
+    .option("dateFormat","M/d/yyyy")
+    .load("/Volumes/dev/spark_db/datasets/spark_programming/data/flight-time.json")
 )
 
 # COMMAND ----------
@@ -64,24 +60,24 @@ flight_time_raw_df.limit(3).display()
 
 # COMMAND ----------
 
-from pyspark.sql.types import StringType, LongType, IntegerType, DateType, StructType, StructField
-
-flight_schema = StructType([
-    StructField("FL_DATE", DateType()),
-    StructField("OP_CARRIER", StringType()),
-    StructField("OP_CARRIER_FL_NUM", StringType()),
-    StructField("ORIGIN", StringType()),
-    StructField("ORIGIN_CITY_NAME", StringType()),
-    StructField("DEST", StringType()),
-    StructField("DEST_CITY_NAME", StringType()),
-    StructField("CRS_DEP_TIME", LongType()),
-    StructField("DEP_TIME", LongType()),
-    StructField("WHEELS_ON", IntegerType()),
-    StructField("TAXI_IN", IntegerType()),
-    StructField("CRS_ARR_TIME", LongType()),
-    StructField("ARR_TIME", LongType()),
-    StructField("CANCELLED", IntegerType()),
-    StructField("DISTANCE", IntegerType())
+from pyspark.sql.types import StringType,IntegerType,LongType,StructField,StructType,DateType
+flight_schema= StructType(
+  [
+    StructField("FL_DATE",DateType()), 
+    StructField("OP_CARRIER",StringType()), 
+    StructField("OP_CARRIER_FL_NUM" ,StringType()), 
+    StructField("ORIGIN",StringType()), 
+    StructField("ORIGIN_CITY_NAME" ,StringType()), 
+   StructField("DEST" ,StringType()), 
+    StructField("DEST_CITY_NAME" ,StringType()), 
+    StructField("CRS_DEP_TIME" ,LongType()), 
+    StructField("DEP_TIME" ,LongType()), 
+    StructField("WHEELS_ON" ,IntegerType()), 
+    StructField("TAXI_IN" ,IntegerType()), 
+    StructField("CRS_ARR_TIME" ,LongType()), 
+    StructField("ARR_TIME" ,LongType()), 
+    StructField("CANCELLED" ,IntegerType()), 
+    StructField("DISTANCE" ,IntegerType())
 ])
 
 # COMMAND ----------
@@ -93,11 +89,12 @@ flight_schema = StructType([
 
 flight_time_raw_with_schema_df = (
     spark.read
-        .format("json")
-        .option("mode", "FAILFAST")
-        .option("dateFormat", "M/d/yyyy")
-        .schema(flight_schema)
-        .load("/Volumes/dev/spark_db/datasets/spark_programming/data/flight-time.json")
+    .format("json")
+    .option("mode","FAILFAST")
+    .option("dateformat","M/d/yyyy")
+    .schema(flight_schema)
+    .load("/Volumes/dev/spark_db/datasets/spark_programming/data/flight-time.json")
+    
 )
 
 # COMMAND ----------
@@ -120,8 +117,10 @@ flight_time_raw_with_schema_df.write.mode("overwrite").saveAsTable("dev.spark_db
 
 # COMMAND ----------
 
-# MAGIC %sql
-# MAGIC select * from dev.spark_db.flight_time_raw limit 3
+df = flight_time_raw
+result = df.groupBy("ORIGIN").count()
+result.filter()
+result.show()
 
 # COMMAND ----------
 
