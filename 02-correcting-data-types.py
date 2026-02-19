@@ -34,7 +34,7 @@ flight_time_raw_df = spark.read.table("dev.spark_db.flight_time_raw")
 # COMMAND ----------
 
 from pyspark.sql.functions import expr
-
+from pyspark.sql import functions as F
 step_1_df = (
     flight_time_raw_df.withColumns({
     "CRS_DEP_TIME_HH": expr("left(lpad(CRS_DEP_TIME, 4, '0'), 2)"),
@@ -48,9 +48,19 @@ step_2_df = (
     })
 )
 
+step3_upper_df = step_2_df.withColumn("ORIGIN_CITY_NAME",expr("upper(ORIGIN_CITY_NAME)"))
+
+step4_lower_df = step_2_df.withColumn("DEST_CITY_NAME",expr("lower(DEST_CITY_NAME)"))
+
+step_case_df = step4_lower_df.withColumn("DISTANCE_EX",expr("CASE WHEN DISTANCE >600 THEN 'LONG DISTANCE' ELSE 'SHORT DISTANCE' END"))  
+
+
+step_5_col = step_case_df.select("*",F.col("DEST_CITY_NAME"),F.lit("USA").alias("country"))
+
+
 # COMMAND ----------
 
-step_2_df.limit(2).display()
+step_5_col.display()
 
 # COMMAND ----------
 
@@ -94,9 +104,3 @@ result_df = (
 # COMMAND ----------
 
 result_df.write.mode("overwrite").saveAsTable("dev.spark_db.flight_time")
-
-# COMMAND ----------
-
-# MAGIC %sql
-# MAGIC
-# MAGIC select * from dev.spark_db.flight_time
