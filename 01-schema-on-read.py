@@ -51,7 +51,7 @@ flight_time_raw_df = (
 
 # COMMAND ----------
 
-flight_time_raw_df.limit(3).display()
+flight_time_raw_df.limit(10).display()
 
 # COMMAND ----------
 
@@ -113,14 +113,31 @@ flight_time_raw_with_schema_df.limit(3).display()
 
 # COMMAND ----------
 
-flight_time_raw_with_schema_df.write.mode("overwrite").saveAsTable("dev.spark_db.flight_time_raw")
+df_test1 =flight_time_raw_with_schema_df.write.mode("overwrite").saveAsTable("dev.spark_db.flight_time_raw")
 
 # COMMAND ----------
 
-df = flight_time_raw
-result = df.groupBy("ORIGIN").count()
-result.filter()
-result.show()
+# MAGIC %sql
+# MAGIC select round(DEP_TIME /60)as deptime,DEP_TIME from dev.spark_db.flight_time_raw  limit 5;
+
+# COMMAND ----------
+
+flight_time_raw_with_schema_df.display()
+
+# COMMAND ----------
+
+from pyspark.sql.functions import expr
+
+df_test1 =(
+    flight_time_raw_with_schema_df.withColumns({
+    "CRS_DEP_TIME_HH" : expr("left(lpad(CRS_DEP_TIME,4,'0'),2)"),
+    "CRS_DEP_TIME_MM" : expr("right(lpad(CRS_DEP_TIME,4,'0'),2)")
+})
+           )
+
+# COMMAND ----------
+
+df_test1.limit(5).display()
 
 # COMMAND ----------
 
