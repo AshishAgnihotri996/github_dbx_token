@@ -104,3 +104,7 @@ result_df = (
 # COMMAND ----------
 
 result_df.write.mode("overwrite").saveAsTable("dev.spark_db.flight_time")
+
+# COMMAND ----------
+
+
